@@ -19,8 +19,22 @@
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
+                <!-- SHOPPING CART -->
+                <?php
+                 $pesanan_utama = \App\Models\Pesanan::where('user_id', Auth::user()->id)->where('status', 0)->first();
+                 $notif = \App\Models\PesananDetail::where('pesanan_id', $pesanan_utama->id)->count();
+                ?>
+                <a href="{{ route('checkout') }}" class="relative text-gray-600 hover:text-gray-900">
+                    <i class="fa fa-shopping-cart text-xl"></i>
+
+                    <span class="absolute -top-2 -right-2 bg-red-500 text with text-xs px-1 rounded-full">
+                        {{ $notif ?? 0 }}
+                    </span>
+                </a>
+
+
+                <!-- USER DROPDOWN -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button

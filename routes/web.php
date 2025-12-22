@@ -23,4 +23,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/pesan/{id}', [PesanController::class, 'index'])
     ->middleware('auth');
 
+Route::post('/pesan/{id}', [PesanController::class, 'pesan']);
+
+Route::get('/check_out', [PesanController::class, 'check_out'])->name('checkout');
+
 require __DIR__.'/auth.php';
