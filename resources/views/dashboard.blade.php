@@ -20,8 +20,8 @@
                                     <strong>Stok: </strong> {{ $barang->stok }} <br>
                                     <hr>
                                     <strong>Keterangan: </strong> <br>
-                                    {{ $barang->keterangan }} 
-                                <a href="{{ url('pesan') }}/{{ $barang->id }}" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+                                    {{ $barang->keterangan }} <br>
+                                <a href="{{ url('pesan') }}/{{ $barang->id }}" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>Order</a>
                             </div>
                         </div>
                     </div>

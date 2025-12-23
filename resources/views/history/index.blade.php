@@ -17,7 +17,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="fa fa-history"><i class="fa fa-shopping-cart"></i>
+                            <h3 class="fa fa-history">
                                 Riwayat Pemesanan
                             </h3>
                             <table class="table table-striped">

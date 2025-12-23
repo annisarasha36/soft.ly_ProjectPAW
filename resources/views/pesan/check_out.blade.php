@@ -18,7 +18,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h3 class="text-xl font-semibold mb-3"><i class="fa fa-shopping-cart"></i>
-                                Check Out
+                                Add To Cart
                             </h3>
                             @if(!empty($pesanan))
                             <p align="right"> Tanggal Pesan: {{ $pesanan->tanggal }}</p>
