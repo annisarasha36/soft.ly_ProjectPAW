@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PesanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HistoryController;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -22,9 +23,13 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/pesan/{id}', [PesanController::class, 'index'])
     ->middleware('auth');
-
 Route::post('/pesan/{id}', [PesanController::class, 'pesan']);
-
 Route::get('/check_out', [PesanController::class, 'check_out'])->name('checkout');
+Route::delete('/check_out/{id}', [PesanController::class, 'delete']);
+Route::get('konfirmasi-check-out', [PesanController::class, 'konfirmasi']);
+Route::get('/history', [HistoryController::class, 'index'])
+    ->middleware('auth')
+    ->name('history');
+Route::get('/history/{id}', [HistoryController::class, 'detail']);
 
 require __DIR__.'/auth.php';

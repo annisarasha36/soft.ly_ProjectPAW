@@ -8,7 +8,7 @@ class PesananDetail extends Model
 {
     public function barang()
     {
-        return $this->belongsTo('App\Barang', 'barang_id', 'id');
+        return $this->belongsTo('App\Models\Barang', 'barang_id', 'id');
     }
 
     public function pesanan()

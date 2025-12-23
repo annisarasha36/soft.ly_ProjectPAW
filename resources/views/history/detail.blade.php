@@ -3,22 +3,35 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 mt-2">
-                    <a href="{{ url('dashboard') }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Kembali
+                    <a href="{{ url('history') }}" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Kembali
                     </a>
                 </div>
                 <div class="col-md-12 mt-2">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Check Out</li>
+                            <li class="breadcrumb-item"><a href="{{ url('history') }}">History</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Detail Pemesanan</li>
                         </ol>
                     </nav>
                 </div>
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="text-xl font-semibold mb-3"><i class="fa fa-shopping-cart"></i>
-                                Check Out
+                            <h3 class="text-xl font-semibold mb-3">
+                                Sukses Check Out
+                            </h3>
+                            <h5 class="text-2xl mb-3">
+                                Pesanan anda telah dicheck out, untuk pembayaran silakan transfer ke <br> <strong>Bank BSI Nomor Rekening: 7663797</strong> <br>nominal: <strong>Rp.{{ number_format($pesanan->jumlah_harga + $pesanan->kode) }}</strong>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="text-xl font-semibold mb-3">
+                                Detail Pemesanan
                             </h3>
                             @if(!empty($pesanan))
                             <p align="right"> Tanggal Pesan: {{ $pesanan->tanggal }}</p>
@@ -42,24 +55,20 @@
                                         <td>{{ $pesanan_detail->jumlah }}</td>
                                         <td align="left">Rp.{{ number_format($pesanan_detail->barang->harga) }}</td>
                                         <td align="left">Rp.{{ number_format($pesanan_detail->jumlah_harga) }}</td>
-                                        <td>
-                                            <form action="{{ url('check_out') }}/{{ $pesanan_detail->id }}" method="post"
-                                            onsubmit="return confirm('Yakin mau hapus item ini?')">
-                                                @csrf
-                                                {{ method_field('DELETE') }}
-                                                <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                                            </form>
-                                        </td>
+                                        
                                     </tr>
                                     @endforeach
                                     <tr>
-                                        <td colspan="4" align="left"><strong>Total Harga: </strong></td>
+                                        <td colspan="4" align="right"><strong>Total Harga: </strong></td>
                                         <td><strong>Rp.{{ number_format($pesanan->jumlah_harga) }}</strong></td>
-                                        <td>
-                                            <a href="{{ url('konfirmasi-check-out') }}" class="btn btn-success">
-                                                <i class="fa fa-shopping-cart"></i> Check Out 
-                                            </a>
-                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" align="right"><strong>Kode Unik </strong></td>
+                                        <td><strong>Rp.{{ number_format($pesanan->kode) }}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" align="right"><strong>Total: </strong></td>
+                                        <td><strong>Rp.{{ number_format($pesanan->jumlah_harga + $pesanan->kode) }}</strong></td>
                                     </tr>
                                 </tbody>
                             </table>

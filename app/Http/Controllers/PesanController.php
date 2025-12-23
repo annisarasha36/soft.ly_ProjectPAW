@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Pesanan;
 use App\Models\PesananDetail;
+use App\Models\User;
 use Auth;
 use Carbon\Carbon;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -38,6 +39,7 @@ class PesanController extends Controller
             $pesanan->tanggal = $tanggal;
             $pesanan->status = 0;
             $pesanan->jumlah_harga = 0;
+            $pesanan->kode = mt_rand(100, 999);
             $pesanan->save();
         }
 
@@ -57,10 +59,10 @@ class PesanController extends Controller
         } else {
             $pesanan_detail = PesananDetail::where('barang_id', $barang->id)->where('pesanan_id', $pesanan_baru->id)->first();
             $pesanan_detail->jumlah = $pesanan_detail->jumlah + $request->jumlah_pesan;
-            
+
             //harga sekarang
             $harga_pesanan_detail_baru = $barang->harga * $request->jumlah_pesan;
-            $pesanan_detail->jumlah_harga = $pesanan_detail->jumlah_harga+$harga_pesanan_detail_baru;
+            $pesanan_detail->jumlah_harga = $pesanan_detail->jumlah_harga + $harga_pesanan_detail_baru;
             $pesanan_detail->update();
         }
 
@@ -70,16 +72,68 @@ class PesanController extends Controller
         $pesanan->update();
 
         //Sweet Alert
-        Alert::success('Berhasil', 'Pesanan berhasil');
+        Alert::success('Berhasil', 'Item telah dimasukkan ke keranjang!');
         return redirect()->back();
 
         return redirect('dashboard');
     }
 
-    public function check_out() {
+    public function check_out()
+    {
         $pesanan = Pesanan::where('user_id', Auth::user()->id)->where('status', 0)->first();
-        $pesanan_details = PesananDetail::where('pesanan_id', $pesanan->id)->get();
+        $pesanan_details = collect();
+
+        if (!empty($pesanan)) {
+            $pesanan_details = PesananDetail::where('pesanan_id', $pesanan->id)->get();
+        }
 
         return view('pesan.check_out', compact('pesanan', 'pesanan_details'));
+    }
+
+    public function delete($id)
+    {
+        $pesanan_detail = PesananDetail::where('id', $id)->first();
+        $pesanan = Pesanan::where('id', $pesanan_detail->pesanan_id)->first();
+        $pesanan->jumlah_harga = $pesanan->jumlah_harga - $pesanan_detail->jumlah_harga;
+        $pesanan->update();
+
+        $pesanan_detail->delete();
+        Alert::error('Terhapus', 'Pesanan Berhasil Dihapus');
+        return redirect('check_out');
+    }
+
+    public function konfirmasi()
+    {
+        $user = User::where('id', Auth::user()->id)->first();
+
+        if (empty($user->alamat)) {
+            Alert::error('Gagal', 'Lengkapi Identitas');
+            return redirect('profile');
+        }
+
+        if (empty($user->no_hp)) {
+            Alert::error('Gagal', 'Lengkapi Identitas');
+            return redirect('profile');
+        }
+        $pesanan = Pesanan::where('user_id', Auth::user()->id)
+            ->where('status', 0)
+            ->first();
+        if (!$pesanan) {
+            Alert::error('Gagal', 'Tidak ada pesanan untuk dikonfirmasi');
+            return redirect('check_out');
+        }
+
+        $pesanan_id = $pesanan->id;
+        $pesanan->status = 1;
+        $pesanan->save();
+
+        $pesanan_details = PesananDetail::where('pesanan_id', $pesanan_id)->get();
+        foreach ($pesanan_details as $pesanan_detail) {
+            $barang = Barang::where('id', $pesanan_detail->barang_id)->first();
+            $barang->stok = $barang->stok - $pesanan_detail->jumlah;
+            $barang->save();
+        }
+        Alert::success('Berhasil', 'Berhasil Check Out');
+        return redirect('history');
     }
 }

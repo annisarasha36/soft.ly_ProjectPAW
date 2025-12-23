@@ -57,4 +57,9 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function index() {
+        $user = User::where('id', Auth::user()->id)->first();
+        return view('profile.index', compact('user'));
+    }
 }
